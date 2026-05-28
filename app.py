@@ -102,11 +102,11 @@ def analyze_resume(text):
     words = len(text.split())
     result["word_count"] = words
     if words < 200:
-        result["length_feedback"] = "Resume bohot chota hai — zyada detail add karo!"
+    result["length_feedback"] = "Resume is too short — add more details!"
     elif words > 800:
-        result["length_feedback"] = "Resume thoda lamba hai — concise rakho!"
+    result["length_feedback"] = "Resume is a bit long — keep it concise!"
     else:
-        result["length_feedback"] = "Resume ki length bilkul theek hai!"
+    result["length_feedback"] = "Resume length is perfect!"
 
     # 5. Score calculate karo
     score = 0
@@ -148,26 +148,34 @@ def analyze_resume(text):
     # 7. Suggestions
     suggestions = []
     if not email:
-        suggestions.append("Email address add karo — zaroor hona chahiye!")
-    if not phone:
-        suggestions.append("Phone number add karo!")
-    if not linkedin:
-        suggestions.append("LinkedIn profile link add karo!")
-    if not github:
-        suggestions.append("GitHub link add karo — especially for tech jobs!")
-    if not keyword_results["education"]["found"]:
-        suggestions.append("Education section properly likho — degree, university, year!")
-    if not keyword_results["experience"]["found"]:
-        suggestions.append("Experience section add karo — internships bhi chalenge!")
-    if not keyword_results["certifications"]["found"]:
-        suggestions.append("Certifications add karo — Coursera, Udemy wagera!")
-    if total_skills < 5:
-        suggestions.append("Zyada technical skills add karo!")
-    if words < 200:
-        suggestions.append("Resume mein zyada detail likho!")
+    suggestions.append("Add an email address — it is essential!")
 
+    if not phone:
+    suggestions.append("Add a phone number!")
+
+    if not linkedin:
+    suggestions.append("Add a LinkedIn profile link!")
+
+    if not github:
+    suggestions.append("Add a GitHub link — especially important for tech jobs!")
+
+    if not keyword_results["education"]["found"]:
+    suggestions.append("Properly add an Education section — degree, university, year!")
+
+    if not keyword_results["experience"]["found"]:
+    suggestions.append("Add an Experience section — internships also count!")
+
+    if not keyword_results["certifications"]["found"]:
+    suggestions.append("Add certifications — such as Coursera or Udemy!")
+
+    if total_skills < 5:
+    suggestions.append("Add more technical skills!")
+
+    if words < 200:
+    suggestions.append("Add more details to your resume!")
+    
     if not suggestions:
-        suggestions.append("Zabardast resume hai — koi major issue nahi!")
+    suggestions.append("Great resume — no major issues found!")
 
     result["suggestions"] = suggestions
     return result
@@ -180,13 +188,13 @@ def index():
 @app.route("/analyze", methods=["POST"])
 def analyze():
     if "resume" not in request.files:
-        return jsonify({"error": "File nahi mila!"})
+        return jsonify({"error": "File not found!"})
     file = request.files["resume"]
     if file.filename == "":
-        return jsonify({"error": "Koi file select nahi ki!"})
+        return jsonify({"error": "No file was selected"})
     text = extract_text(file)
     if not text.strip():
-        return jsonify({"error": "File se text extract nahi hua!"})
+        return jsonify({"error": "Could not extract text from the file!"})
     result = analyze_resume(text)
     return jsonify(result)
 
